@@ -11,13 +11,16 @@ class Ship {
         if (this.facingDirection == "up") {
             this.direction.x = this.pos.x;
             this.direction.y = this.pos.y - this.radius;
-        } else if (this.facingDirection == "right") {
+        } 
+        if (this.facingDirection == "right") {
             this.direction.x = this.pos.x + this.radius;
             this.direction.y = this.pos.y;
-        } else if (this.facingDirection == "down") {
+        }
+        if (this.facingDirection == "down") {
             this.direction.x = this.pos.x;
             this.direction.y = this.pos.y + this.radius;
-        } else if (this.facingDirection == "left") {
+        } 
+        if (this.facingDirection == "left") {
             this.direction.x = this.pos.x - this.radius;
             this.direction.y = this.pos.y;
         }
@@ -36,13 +39,16 @@ class Ship {
             console.log(this.pos)
             this.update(0, -this.vel);
             this.facingDirection = "up";
-        } else if (keyIsDown(68)) { // D
+        }
+        if (keyIsDown(68)) { // D
             this.update(this.vel, 0);
             this.facingDirection = "right"
-        } else if (keyIsDown(83)) { // S
+        }
+        if (keyIsDown(83)) { // S
             this.update(0, this.vel);
             this.facingDirection = "down";
-        } else if (keyIsDown(65)) { // A
+        }
+        if (keyIsDown(65)) { // A
             this.update(-this.vel, 0);
             this.facingDirection = "left"
         }
