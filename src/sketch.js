@@ -22,7 +22,7 @@ function draw() {
     // hidden by the world and other objects so it shouldn't be visible
     background(242, 0, 255);
 
-    world.update();
+    world.update(player.position);
 
 
 
@@ -31,6 +31,7 @@ function draw() {
     world.render();
     player.render();
 
+    
 
     push();
     textSize(32);

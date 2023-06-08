@@ -10,6 +10,8 @@ class World
             "sea": loadShader("media/shaders/sea.vert", "media/shaders/sea.frag"),
         };
 
+        this.focusPosition = createVector(0, 0);
+
         
     }
 
@@ -18,9 +20,9 @@ class World
         textFont(this.fonts["default"]);
     }
 
-    update()
+    update(focusPosition)
     {
-
+        this.focusPosition = focusPosition;
     }
 
     render()
@@ -33,6 +35,8 @@ class World
         push();
         gl.disable(gl.DEPTH_TEST);
         let seaShader = this.shaders["sea"];
+        var offset = this.focusPosition;
+        seaShader.setUniform("u_Offset", [offset.x, offset.y]);
         seaShader.setUniform("u_Resolution", [width, height]);
         seaShader.setUniform("u_Time", millis() / 1000);
         shader(seaShader);
