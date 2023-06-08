@@ -1,8 +1,7 @@
 class Ship {
-    constructor(x, y, npc=false) {
-        this.npc = npc;
+    constructor(x, y) {
         this.r = 10;
-        this.position = createVector(x, y);
+        this.position = createVector(0, 0);
         this.angle = 0;
         this.targetAngle = 0;
         this.headingVector = p5.Vector.fromAngle(radians(this.angle));
@@ -16,6 +15,10 @@ class Ship {
         this.currentSailMode = this.sailModes[this.currentSailModeIndex];
     }
 
+    setup() {
+        this.position = createVector(0, 0);
+    }
+
     nextSailMode() {
         if (this.currentSailModeIndex < 3) ++this.currentSailModeIndex;
     }
@@ -26,9 +29,6 @@ class Ship {
     }
 
     render() {
-
-
-
         this.poly[0] = createVector(-this.r, this.r);
         this.poly[1] = createVector(this.r, this.r);
         this.poly[2] = createVector(this.r / 2, -2 * this.r);
@@ -57,7 +57,7 @@ class Ship {
             this.headingVector = p5.Vector.fromAngle(radians(this.angle));
         }
 
-        if (!this.npc) this.listenControls();
+        this.listenControls();
 
         this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 
@@ -70,8 +70,8 @@ class Ship {
         } else if (this.currentSailMode == "nosail") {
             this.velocity.mult(0.999);
             if (this.velocity.mag() <= 0.1) this.velocity.mult(0);
-            // this.turnAngle = 0.003;
-            this.turnAngle = 0.01 / this.velocity.mag();
+            this.turnAngle = 0.003;
+            // this.turnAngle = 0.01 / this.velocity.mag();
         } else if (this.currentSailMode == "halfsail") {
             this.velocity.mult(0.99);
             if (this.velocity.mag() < 1.0) this.boost(0.05);
@@ -138,7 +138,6 @@ class Ship {
     }
 
     listenControls() {
-
         if (keyIsDown(68)) {
             this.turn(this.turnAngle)
         } else if (keyIsDown(65)) {
