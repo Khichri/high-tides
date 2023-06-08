@@ -1,10 +1,10 @@
 let player;
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    createCanvas(800, 800);
     pixelDensity(1);
 
-    player = new Ship(300, 300, 50);
+    player = new Ship(300, 300);
 }
 
 function draw() {
@@ -14,10 +14,14 @@ function draw() {
 }
 
 function keyPressed() {
-    if (keyIsDown(87)) {
-        player.nextSailMode();
-
-    } else if (keyIsDown(83)) {
-        player.prevSailMode();
+    if (keyIsDown(49)) {
+        player.currentSailMode = "anchor";
+        console.log(key)
+    } else if (keyIsDown(50)) {
+        player.currentSailMode = "halfsail";
+    } else if (keyIsDown(51)) {
+        player.currentSailMode = "fullsail";
+    } else if (keyIsDown(52)) {
+        player.currentSailMode = "nosail";
     }
 }
