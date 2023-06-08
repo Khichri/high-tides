@@ -31,6 +31,19 @@ class Ship {
     }
 
     render() {
+
+        
+        push();
+        textSize(32);
+        text(`sail_mode: ${this.currentSailMode}`, 10, 30);
+        pop();
+
+        push();
+        textSize(32);
+        text(`ship_speed: ${this.velocity.mag()}`, 400, 30);
+        pop();
+
+
         this.poly[0] = createVector(-this.r, this.r);
         this.poly[1] = createVector(this.r, this.r);
         this.poly[2] = createVector(this.r / 2, -2 * this.r);
@@ -86,19 +99,13 @@ class Ship {
         // console.log(this.velocity)
         // this.renderRipples();
 
-        push();
-        textSize(32);
-        text(`sail_mode: ${this.currentSailMode}`, 10, 30);
-        pop();
-
-        push();
-        textSize(32);
-        text(`ship_speed: ${this.velocity.mag()}`, 400, 30);
-        pop();
-
-        this.render();
+        // this should be done by sketch.js
+        // this.render();
     }
 
+
+    
+    // ripples will be done by world in shader
     renderRipples() {
         loadPixels();
 
@@ -133,6 +140,7 @@ class Ship {
            this.currentRippleLocations[width-1][i] = 0.0;
         }
     }
+    
 
     turn(angle) {
         this.targetAngle += angle;
