@@ -1,14 +1,23 @@
 let player;
 
 function setup() {
-    createCanvas(600, 600);
+    createCanvas(windowWidth, windowHeight);
+    pixelDensity(1);
 
     player = new Ship(300, 300, 50);
 }
 
 function draw() {
-    background(0);
+    background(0, 100, 200);
 
-    player.render();
-    player.listenControls();
+    player.update();
+}
+
+function keyPressed() {
+    if (keyIsDown(87)) {
+        player.nextSailMode();
+
+    } else if (keyIsDown(83)) {
+        player.prevSailMode();
+    }
 }
