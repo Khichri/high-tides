@@ -14,14 +14,10 @@ function draw() {
 }
 
 function keyPressed() {
-    if (keyIsDown(49)) {
-        player.currentSailMode = "anchor";
-        console.log(key)
-    } else if (keyIsDown(50)) {
-        player.currentSailMode = "halfsail";
-    } else if (keyIsDown(51)) {
-        player.currentSailMode = "fullsail";
-    } else if (keyIsDown(52)) {
-        player.currentSailMode = "nosail";
+    if (keyIsDown(87)) {
+        player.nextSailMode();
+
+    } else if (keyIsDown(83)) {
+        player.prevSailMode();
     }
 }

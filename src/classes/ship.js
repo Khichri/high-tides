@@ -10,6 +10,17 @@ class Ship {
         this.velocityDamping = 0.97;
         this.turnAngle = this.velocity.mag() / 100;
         this.poly = [];
+        this.sailModes = ["anchor", "nosail", "halfsail", "fullsail"];
+        this.currentSailModeIndex = 1;
+        this.currentSailMode = this.sailModes[this.currentSailModeIndex];
+    }
+
+    nextSailMode() {
+        if (this.currentSailModeIndex < 3) ++this.currentSailModeIndex;
+    }
+
+    prevSailMode() {
+        if (this.currentSailModeIndex > 0) --this.currentSailModeIndex;
         this.currentSailMode = "nosail";
     }
 
@@ -44,12 +55,9 @@ class Ship {
 
         this.listenControls();
 
-        // this.currentSailMode = this.sailModes[this.currentSailModeIndex];
+        this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 
         this.position.add(this.velocity);
-        // this.velocity.mult(this.velocityDamping);
-
-        // this.turnAngle = this.velocity.mag() / 500;
 
         if (this.currentSailMode == "anchor") {
             this.velocity.mult(0.97);
@@ -102,9 +110,9 @@ class Ship {
 
     listenControls() {
 
-        if (keyIsDown(69)) { // Q
+        if (keyIsDown(68)) {
             this.turn(this.turnAngle)
-        } else if (keyIsDown(81)) { // E
+        } else if (keyIsDown(65)) {
             this.turn(-this.turnAngle);
         }
     }
