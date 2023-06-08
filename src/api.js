@@ -6,6 +6,8 @@ const user = gun.user().recall({
     sessionStorage: true
 })
 
+const game = gun.get("high-tides")
+
 async function login(username, password) {
     return new Promise((resolve, reject) => {
         if(!username) reject("Username can't be empty")
@@ -30,3 +32,12 @@ async function createAcc(username, password) {
     })
 }
 
+async function shipStateUpdate(player) {
+    return new Promise((resolve, reject) => {
+        if(!user.is) reject("User not logged in")
+        user.get("position").get("x").put(player.position.x)
+        user.get("position").get("y").put(player.position.y)
+        user.get("velocity").get("x").put(player.velocity.x)
+        user.get("velocity").get("y").put(player.velocity.y)
+    })
+}
