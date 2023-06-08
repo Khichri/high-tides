@@ -1,5 +1,6 @@
 class Ship {
-	constructor(x, y) {
+	constructor(x, y, isCurrentPlayer = false) {
+        this.isCurrentPlayer = isCurrentPlayer
 		this.r = 15;
 		this.position = createVector(0, 0);
 		this.angle = 0;
@@ -13,6 +14,12 @@ class Ship {
 		this.sailModes = ["anchor", "nosail", "halfsail", "fullsail"];
 		this.currentSailModeIndex = 1;
 		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
+		this.cannonBallsFired = [];
+        this.sprite = loadImage("media/images/ship_sprite.png");
+	}
+
+	fireCannonBall() {
+        this.cannonBallsFired.push(new CannonBall(this, this.position.x, this.position.y, "cannonball"));
 	}
 
 	setup() {
@@ -28,32 +35,31 @@ class Ship {
 		this.currentSailMode = "nosail";
 	}
 
-	render() {
-		this.poly[0] = createVector(-this.r, this.r);
-		this.poly[1] = createVector(this.r, this.r);
-		this.poly[2] = createVector(this.r / 2, -2 * this.r);
-		this.poly[3] = createVector(-this.r / 2, -2 * this.r);
+	render() 
+    {
+        if(this.isCurrentPlayer)
+        {
+		    push();
+			noStroke();
+            rotate(this.targetAngle - PI / 2);
+            texture(this.sprite);
+            rect(-25, -50, 50, 100);
+    		pop();
+        }
+        else
+        {
+             // TODO   
+        }
 
-		for (let i = 0; i < this.poly.length; i++) {
-			this.poly[i] = this.poly[i].rotate(this.targetAngle + PI / 2);
-			//this.poly[i].add(this.position);
+        // render the cannon balls here
+        push();
+        translate(-this.position.x, -this.position.y);
+        
+		for (let cannonBall of this.cannonBallsFired) {
+		 	cannonBall.render();
 		}
-
-		push();
-		//translate(this.position.x, this.position.y);
-		fill(139, 69, 19);
-		noStroke();
-		beginShape();
-		vertex(this.poly[0].x, this.poly[0].y);
-		vertex(this.poly[1].x, this.poly[1].y);
-		vertex(this.poly[2].x, this.poly[2].y);
-		vertex(this.poly[3].x, this.poly[3].y);
-		endShape(CLOSE);
-
-		// TODO: render the ship as a rect
-
-
-		pop();
+        
+        pop();
 	}
 
 	update(x, y) {
@@ -79,21 +85,26 @@ class Ship {
 			// this.turnAngle = 0.01 / this.velocity.mag();
 		} else if (this.currentSailMode == "halfsail") {
 			this.velocity.mult(0.99);
-			if (this.velocity.mag() < 4.0) this.boost(0.05);
-			this.turnAngle = 0.010;
+			if (this.velocity.mag() < 2.0) this.boost(0.05);
+			this.turnAngle = 0.009;
 		} else if (this.currentSailMode == "fullsail") {
-			if (this.velocity.mag() < 2.0) this.boost(0.2);
-			else if (this.velocity.mag() < 4.0) this.boost(0.4);
-			else this.boost(0.8);
+			if (this.velocity.mag() < 1.0) this.boost(0.1);
+			else if (this.velocity.mag() < 2.0) this.boost(0.2);
+			else this.boost(0.4);
 			this.velocity.mult(0.91);
-			this.turnAngle = 0.015;
+			this.turnAngle = 0.006;
 		}
 
-		// console.log(this.velocity)
-		// this.renderRipples();
-
+		for (let cannonBall of this.cannonBallsFired) 
+        {
+		 	cannonBall.update();
+			if (cannonBall.life < 0) 
+            {
+                this.cannonBallsFired.splice(this.cannonBallsFired.indexOf(cannonBall), 1);
+				break;
+			}
+		}
 	}
-
 
 	turn(angle) {
 		this.targetAngle += angle;

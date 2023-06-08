@@ -1,11 +1,11 @@
 let player;
 let world;
 let gl;
+let players = {};
 
-function preload() 
-{
+function preload() {
     world = new World();
-    player = new Ship();
+    player = new Ship(0, 0, true);
 }
 
 function setup() {
@@ -31,18 +31,18 @@ function draw() {
     world.render();
     player.render();
 
-    
+
 
     push();
     textSize(32);
     fill(255, 255, 0);
-    text(`sail_mode: ${player.currentSailMode}`, -width/2 + 10, -height/2 + 30);
+    text(`sail_mode: ${player.currentSailMode}`, -width / 2 + 10, -height / 2 + 30);
     pop();
 
     push();
     textSize(32);
     fill(255, 255, 0);
-    text(`ship_speed: ${player.velocity.mag()}`, -width/2 + 400, -height/2 + 30);
+    text(`ship_speed: ${player.velocity.mag()}`, -width / 2 + 400, -height / 2 + 30);
     pop();
 }
 
@@ -54,4 +54,11 @@ function keyPressed() {
     } else if (keyIsDown(83)) {
         player.prevSailMode();
     }
+
+    if (keyIsDown(66)) {
+        player.fireCannonBall();
+    }
+
+    shipStateUpdate(player)
+
 }
