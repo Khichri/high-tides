@@ -26,6 +26,9 @@ class Ship {
     }
 
     render() {
+
+
+
         this.poly[0] = createVector(-this.r, this.r);
         this.poly[1] = createVector(this.r, this.r);
         this.poly[2] = createVector(this.r / 2, -2 * this.r);
@@ -84,10 +87,46 @@ class Ship {
 
         // console.log(this.velocity)
         // this.renderRipples();
-
-
-        this.render();
+      
     }
+
+    
+    // ripples will be done by world in shader
+    renderRipples() {
+        loadPixels();
+
+        for (let i = 1; i < width - 1; ++i) {
+            for (let j = 1; j < height - 1; ++j) {
+                this.currentRippleLocations[i][j] = (
+                    this.previousRippleLocations[i-1][j] + 
+                    this.previousRippleLocations[i+1][j] + 
+                    this.previousRippleLocations[i][j-1] +
+                    this.previousRippleLocations[i][j+1]
+                ) / 2.0 - this.currentRippleLocations[i][j];
+
+                this.currentRippleLocations[i][j] *= 0.5;
+
+                let index = (i + j * width) * 4;
+                pixels[index + 0] = this.currentRippleLocations[i][j];
+                pixels[index + 1] = this.currentRippleLocations[i][j];
+                pixels[index + 2] = this.currentRippleLocations[i][j];
+            }
+        }
+
+        updatePixels();
+
+        let tmp = this.previousRippleLocations;
+        this.previousRippleLocations = this.currentRippleLocations;
+        this.currentRippleLocations = tmp;
+
+        for (let i=0; i<width; ++i) {
+           this.currentRippleLocations[i][0] = 0.0;
+           this.currentRippleLocations[i][height-1] = 0.0;
+           this.currentRippleLocations[0][i] = 0.0;
+           this.currentRippleLocations[width-1][i] = 0.0;
+        }
+    }
+    
 
     turn(angle) {
         this.targetAngle += angle;
