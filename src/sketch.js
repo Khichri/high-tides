@@ -1,7 +1,7 @@
 let player;
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
+    createCanvas(800, 800);
     pixelDensity(1);
 
     player = new Ship(300, 300);

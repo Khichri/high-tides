@@ -1,6 +1,6 @@
 class Ship {
     constructor(x, y, r) {
-        this.r = 15;
+        this.r = 10;
         this.position = createVector(x, y);
         this.angle = 0;
         this.targetAngle = 0;
