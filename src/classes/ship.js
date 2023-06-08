@@ -1,25 +1,19 @@
 class Ship {
-    constructor(x, y, r) {
-        this.r = 15;
+    constructor(x, y, npc=false) {
+        this.npc = npc;
+        this.r = 10;
         this.position = createVector(x, y);
         this.angle = 0;
         this.targetAngle = 0;
         this.headingVector = p5.Vector.fromAngle(radians(this.angle));
         this.velocity = createVector(0, 0);
-        this.maxSpeed = 2.5;
+        this.maxSpeed = 40;
         this.velocityDamping = 0.97;
         this.turnAngle = this.velocity.mag() / 100;
         this.poly = [];
         this.sailModes = ["anchor", "nosail", "halfsail", "fullsail"];
-        this.currentSailModeIndex = 0;
+        this.currentSailModeIndex = 1;
         this.currentSailMode = this.sailModes[this.currentSailModeIndex];
-        this.currentRippleLocations = new Array();
-        this.previousRippleLocations = new Array();
-
-        for (let i = 0; i < width; ++i) {
-            this.currentRippleLocations.push(new Array(height).fill(0));
-            this.previousRippleLocations.push(new Array(height).fill(0));
-        }
     }
 
     nextSailMode() {
@@ -28,20 +22,11 @@ class Ship {
 
     prevSailMode() {
         if (this.currentSailModeIndex > 0) --this.currentSailModeIndex;
+        this.currentSailMode = "nosail";
     }
 
     render() {
 
-        
-        push();
-        textSize(32);
-        text(`sail_mode: ${this.currentSailMode}`, 10, 30);
-        pop();
-
-        push();
-        textSize(32);
-        text(`ship_speed: ${this.velocity.mag()}`, 400, 30);
-        pop();
 
 
         this.poly[0] = createVector(-this.r, this.r);
@@ -72,37 +57,38 @@ class Ship {
             this.headingVector = p5.Vector.fromAngle(radians(this.angle));
         }
 
-        this.listenControls();
+
+        if (!this.npc) this.listenControls();
 
         this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 
         this.position.add(this.velocity);
-        this.velocity.mult(this.velocityDamping);
-
-        // this.turnAngle = this.velocity.mag() / 500;
 
         if (this.currentSailMode == "anchor") {
-            this.boost(0);
+            this.velocity.mult(0.97);
             if (this.velocity.mag() <= 0.1) this.velocity.mult(0);
             this.turnAngle = 0;
         } else if (this.currentSailMode == "nosail") {
-            this.boost(0.02);
-            this.turnAngle = 0.003;
+            this.velocity.mult(0.999);
+            if (this.velocity.mag() <= 0.1) this.velocity.mult(0);
+            // this.turnAngle = 0.003;
+            this.turnAngle = 0.01 / this.velocity.mag();
         } else if (this.currentSailMode == "halfsail") {
-            this.boost(0.05);
+            this.velocity.mult(0.99);
+            if (this.velocity.mag() < 1.0) this.boost(0.05);
             this.turnAngle = 0.010;
         } else if (this.currentSailMode == "fullsail") {
-            this.boost(0.1);
+            if (this.velocity.mag() < 1.0) this.boost(0.1);
+            else if (this.velocity.mag() < 2.0) this.boost(0.2);
+            else this.boost(0.3);
+            this.velocity.mult(0.91);
             this.turnAngle = 0.015;
         }
 
         // console.log(this.velocity)
         // this.renderRipples();
-
-        // this should be done by sketch.js
-        // this.render();
+      
     }
-
 
     
     // ripples will be done by world in shader
@@ -154,9 +140,9 @@ class Ship {
 
     listenControls() {
 
-        if (keyIsDown(68)) { // D
+        if (keyIsDown(68)) {
             this.turn(this.turnAngle)
-        } else if (keyIsDown(65)) { // A
+        } else if (keyIsDown(65)) {
             this.turn(-this.turnAngle);
         }
     }

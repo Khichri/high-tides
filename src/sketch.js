@@ -17,6 +17,7 @@ function setup() {
     //pixelDensity(1);
 
     world.setup();
+
 }
 
 function draw() {
@@ -25,6 +26,18 @@ function draw() {
     background(242, 0, 255);
 
     world.update();
+
+    push();
+    textSize(32);
+    text(`sail_mode: ${player.currentSailMode}`, 10, 30);
+    pop();
+
+    push();
+    textSize(32);
+    text(`ship_speed: ${player.velocity.mag()}`, 400, 30);
+    pop();
+
+
     player.update();
 
     world.render();
