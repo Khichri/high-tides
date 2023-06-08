@@ -6,28 +6,11 @@ class Ship {
         this.targetAngle = 0;
         this.headingVector = p5.Vector.fromAngle(radians(this.angle));
         this.velocity = createVector(0, 0);
-        this.maxSpeed = 2.5;
+        this.maxSpeed = 40;
         this.velocityDamping = 0.97;
         this.turnAngle = this.velocity.mag() / 100;
         this.poly = [];
-        this.sailModes = ["anchor", "nosail", "halfsail", "fullsail"];
-        this.currentSailModeIndex = 0;
-        this.currentSailMode = this.sailModes[this.currentSailModeIndex];
-        this.currentRippleLocations = new Array();
-        this.previousRippleLocations = new Array();
-
-        for (let i = 0; i < width; ++i) {
-            this.currentRippleLocations.push(new Array(height).fill(0));
-            this.previousRippleLocations.push(new Array(height).fill(0));
-        }
-    }
-
-    nextSailMode() {
-        if (this.currentSailModeIndex < 3) ++this.currentSailModeIndex;
-    }
-
-    prevSailMode() {
-        if (this.currentSailModeIndex > 0) --this.currentSailModeIndex;
+        this.currentSailMode = "nosail";
     }
 
     render() {
@@ -61,25 +44,33 @@ class Ship {
 
         this.listenControls();
 
-        this.currentSailMode = this.sailModes[this.currentSailModeIndex];
+        // this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 
         this.position.add(this.velocity);
-        this.velocity.mult(this.velocityDamping);
+        // this.velocity.mult(this.velocityDamping);
 
         // this.turnAngle = this.velocity.mag() / 500;
 
         if (this.currentSailMode == "anchor") {
-            this.boost(0);
+            this.velocity.mult(0.97);
             if (this.velocity.mag() <= 0.1) this.velocity.mult(0);
             this.turnAngle = 0;
         } else if (this.currentSailMode == "nosail") {
-            this.boost(0.02);
+            this.velocity.mult(0.999);
+            if (this.velocity.mag() <= 0.1) this.velocity.mult(0);
             this.turnAngle = 0.003;
         } else if (this.currentSailMode == "halfsail") {
-            this.boost(0.05);
+            this.velocity.mult(0.99);
+            if (this.velocity.mag() < 1.0) this.boost(0.05);
+            // this.velocity.limit(1.0);
             this.turnAngle = 0.010;
         } else if (this.currentSailMode == "fullsail") {
-            this.boost(0.1);
+            if (this.velocity.mag() < 1.0) this.boost(0.1);
+            else if (this.velocity.mag() < 2.0) this.boost(0.2);
+            else this.boost(0.3);
+
+            this.velocity.mult(0.91);
+            // this.velocity.limit(2.7);
             this.turnAngle = 0.015;
         }
 
@@ -99,41 +90,6 @@ class Ship {
         this.render();
     }
 
-    renderRipples() {
-        loadPixels();
-
-        for (let i = 1; i < width - 1; ++i) {
-            for (let j = 1; j < height - 1; ++j) {
-                this.currentRippleLocations[i][j] = (
-                    this.previousRippleLocations[i-1][j] + 
-                    this.previousRippleLocations[i+1][j] + 
-                    this.previousRippleLocations[i][j-1] +
-                    this.previousRippleLocations[i][j+1]
-                ) / 2.0 - this.currentRippleLocations[i][j];
-
-                this.currentRippleLocations[i][j] *= 0.5;
-
-                let index = (i + j * width) * 4;
-                pixels[index + 0] = this.currentRippleLocations[i][j];
-                pixels[index + 1] = this.currentRippleLocations[i][j];
-                pixels[index + 2] = this.currentRippleLocations[i][j];
-            }
-        }
-
-        updatePixels();
-
-        let tmp = this.previousRippleLocations;
-        this.previousRippleLocations = this.currentRippleLocations;
-        this.currentRippleLocations = tmp;
-
-        for (let i=0; i<width; ++i) {
-           this.currentRippleLocations[i][0] = 0.0;
-           this.currentRippleLocations[i][height-1] = 0.0;
-           this.currentRippleLocations[0][i] = 0.0;
-           this.currentRippleLocations[width-1][i] = 0.0;
-        }
-    }
-
     turn(angle) {
         this.targetAngle += angle;
     }
@@ -146,9 +102,9 @@ class Ship {
 
     listenControls() {
 
-        if (keyIsDown(68)) { // D
+        if (keyIsDown(69)) { // Q
             this.turn(this.turnAngle)
-        } else if (keyIsDown(65)) { // A
+        } else if (keyIsDown(81)) { // E
             this.turn(-this.turnAngle);
         }
     }
