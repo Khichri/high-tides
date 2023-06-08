@@ -15,6 +15,7 @@ function setup() {
 
     world.setup();
     player.setup();
+    playerInit(player)
 }
 
 function draw() {

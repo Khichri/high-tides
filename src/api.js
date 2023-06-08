@@ -44,18 +44,41 @@ function shipStateUpdate(player) {
 
 game.get("global").map().on((other, id) => {
     console.log(other, id);
-    if(!players[id]) players[id]=new Ship(0, 0, true);
-    other.get("position").get("x").on((data) => {
+    if (!players[other.alias]) players[other.alias] = new Ship(0, 0, true);
+    const oth = gun.get(`~@${other.alias}`)
+    oth.get("position").get("x").on((data) => {
         console.log(data)
-        players[id].position.x=data
+        players[id].position.x = data
     })
-    
+    oth.get("position").get("y").on((data) => {
+        console.log(data)
+        players[id].position.y = data
+    })
+    oth.get("currentSailModeIndex").on((data) => {
+        console.log(data)
+        players[id].currentSailModeIndex = data
+    })
+    oth.get("angle").on((data) => {
+        console.log(data)
+        players[id].angle = data
+    })
+
+
 })
 
 
-gun.on("auth", (ack) => {
-    console.log("Welcome back", ack);
-    user.get("position").get("x").put(Math.round(player.position.x));
-    user.get("position").get("y").put(Math.round(player.position.y));
-    game.get("global").set(user)
-})
+function playerInit(player) {
+    if (user.is) {
+        user.get("position").get("x").put(Math.round(player.position.x));
+        user.get("position").get("y").put(Math.round(player.position.y));
+        game.get("global").set(user)
+    } else {
+        gun.on("auth", (ack) => {
+            console.log("Welcome back", ack);
+            user.get("position").get("x").put(Math.round(player.position.x));
+            user.get("position").get("y").put(Math.round(player.position.y));
+            game.get("global").set(user)
+        })
+    }
+
+}
