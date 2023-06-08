@@ -22,6 +22,7 @@ function draw() {
     pop();
 
     player.update();
+    // shipStateUpdate();
 }
 
 function keyPressed() {

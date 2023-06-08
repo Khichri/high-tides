@@ -54,7 +54,6 @@ class Ship {
             this.headingVector = p5.Vector.fromAngle(radians(this.angle));
         }
 
-
         if (!this.npc) this.listenControls();
 
         this.currentSailMode = this.sailModes[this.currentSailModeIndex];
