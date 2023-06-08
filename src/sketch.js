@@ -10,6 +10,17 @@ function setup() {
 function draw() {
     background(0, 100, 200);
 
+
+    push();
+    textSize(32);
+    text(`sail_mode: ${player.currentSailMode}`, 10, 30);
+    pop();
+
+    push();
+    textSize(32);
+    text(`ship_speed: ${player.velocity.mag()}`, 400, 30);
+    pop();
+
     player.update();
 }
 

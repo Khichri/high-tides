@@ -1,5 +1,6 @@
 class Ship {
-    constructor(x, y, r) {
+    constructor(x, y, npc=false) {
+        this.npc = npc;
         this.r = 10;
         this.position = createVector(x, y);
         this.angle = 0;
@@ -53,7 +54,8 @@ class Ship {
             this.headingVector = p5.Vector.fromAngle(radians(this.angle));
         }
 
-        this.listenControls();
+
+        if (!this.npc) this.listenControls();
 
         this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 
@@ -66,34 +68,23 @@ class Ship {
         } else if (this.currentSailMode == "nosail") {
             this.velocity.mult(0.999);
             if (this.velocity.mag() <= 0.1) this.velocity.mult(0);
-            this.turnAngle = 0.003;
+            // this.turnAngle = 0.003;
+            this.turnAngle = 0.01 / this.velocity.mag();
         } else if (this.currentSailMode == "halfsail") {
             this.velocity.mult(0.99);
             if (this.velocity.mag() < 1.0) this.boost(0.05);
-            // this.velocity.limit(1.0);
             this.turnAngle = 0.010;
         } else if (this.currentSailMode == "fullsail") {
             if (this.velocity.mag() < 1.0) this.boost(0.1);
             else if (this.velocity.mag() < 2.0) this.boost(0.2);
             else this.boost(0.3);
-
             this.velocity.mult(0.91);
-            // this.velocity.limit(2.7);
             this.turnAngle = 0.015;
         }
 
         // console.log(this.velocity)
         // this.renderRipples();
 
-        push();
-        textSize(32);
-        text(`sail_mode: ${this.currentSailMode}`, 10, 30);
-        pop();
-
-        push();
-        textSize(32);
-        text(`ship_speed: ${this.velocity.mag()}`, 400, 30);
-        pop();
 
         this.render();
     }
