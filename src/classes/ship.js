@@ -1,16 +1,15 @@
 class Ship {
-	constructor(x, y, isCurrentPlayer = false) {
-        this.isCurrentPlayer = isCurrentPlayer
+	constructor(x, y, isControllable=false) {
+        this.isControllable = isControllable;
 		this.r = 15;
-		this.position = createVector(0, 0);
+		this.position = createVector(x, y);
 		this.angle = 0;
 		this.targetAngle = 0;
 		this.headingVector = p5.Vector.fromAngle(radians(this.angle));
 		this.velocity = createVector(0, 0);
 		this.maxSpeed = 40;
-		this.velocityDamping = 0.97;
-		this.turnAngle = this.velocity.mag() / 100;
-		this.poly = [];
+		this.turnAngle = 0;
+		this.corners = [];
 		this.sailModes = ["anchor", "nosail", "halfsail", "fullsail"];
 		this.currentSailModeIndex = 1;
 		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
@@ -37,12 +36,13 @@ class Ship {
 
 	render() 
     {
-        if(this.isCurrentPlayer)
+        if(this.isControllable)
         {
 		    push();
 			noStroke();
             rotate(this.targetAngle - PI / 2);
-            texture(this.sprite);
+
+			texture(this.sprite);
             rect(-25, -50, 50, 100);
     		pop();
         }
@@ -51,24 +51,19 @@ class Ship {
              // TODO   
         }
 
-        // render the cannon balls here
         push();
         translate(-this.position.x, -this.position.y);
-        
-		for (let cannonBall of this.cannonBallsFired) {
-		 	cannonBall.render();
-		}
-        
+		for (let cannonBall of this.cannonBallsFired) cannonBall.render();
         pop();
 	}
 
-	update(x, y) {
+	update() {
 		if (this.angle != this.targetAngle) {
 			this.angle = lerp(this.angle, this.targetAngle, 0.05);
 			this.headingVector = p5.Vector.fromAngle(radians(this.angle));
 		}
 
-		this.listenControls();
+		if (!this.isControllable) this.handleShipTurning();
 
 		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 
@@ -95,11 +90,9 @@ class Ship {
 			this.turnAngle = 0.006;
 		}
 
-		for (let cannonBall of this.cannonBallsFired) 
-        {
+		for (let cannonBall of this.cannonBallsFired) {
 		 	cannonBall.update();
-			if (cannonBall.life < 0) 
-            {
+			if (cannonBall.life < 0) {
                 this.cannonBallsFired.splice(this.cannonBallsFired.indexOf(cannonBall), 1);
 				break;
 			}
@@ -116,11 +109,30 @@ class Ship {
 		this.velocity.limit(this.maxSpeed);
 	}
 
-	listenControls() {
-		if (keyIsDown(68)) {
-			this.turn(this.turnAngle)
-		} else if (keyIsDown(65)) {
-			this.turn(-this.turnAngle);
+	applyForce(force) {
+		this.velocity.add(force);
+		this.position.add(this.velocity);
+	}
+
+	handleShipTurning(givenKeyCode) {
+		if (this.isControllable) {
+			if (keyIsDown(68)) this.turn(this.turnAngle)
+			else if (keyIsDown(65)) this.turn(-this.turnAngle);
+		} else {
+			if (givenKeyCode == 68) this.turn(this.turnAngle);
+			else if (givenKeyCode == 65) this.turn(-this.turnAngle);
+		}	
+	}
+
+	handleSailModeSwitching(givenKeyCode) {
+		if (this.isControllable) {
+			if (keyIsDown(87)) this.nextSailMode();
+			else if (keyIsDown(83)) this.prevSailMode();
+			if (keyIsDown(66)) this.fireCannonBall();
+		} else {
+			if (givenKeyCode == 87) this.nextSailMode();
+			else if (givenKeyCode == 83) this.prevSailMode();
+			if (givenKeyCode == 66) this.fireCannonBall();
 		}
 	}
 }

@@ -15,7 +15,6 @@ function setup() {
 
     world.setup();
     player.setup();
-    playerInit(player)
 }
 
 function draw() {
@@ -49,17 +48,8 @@ function draw() {
 
 // better to move this to a seperate file called player controller for controllinjg current player
 function keyPressed() {
-    if (keyIsDown(87)) {
-        player.nextSailMode();
+    player.handleSailModeSwitching();
 
-    } else if (keyIsDown(83)) {
-        player.prevSailMode();
-    }
-
-    if (keyIsDown(66)) {
-        player.fireCannonBall();
-    }
-
-    shipStateUpdate(player)
+    // shipStateUpdate(player)
 
 }
