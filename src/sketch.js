@@ -52,6 +52,14 @@ function draw() {
     fill(255, 255, 0);
     text(`ship_speed: ${player.velocity.mag()}`, -width / 2 + 400, -height / 2 + 30);
     pop();
+
+    var elem = document.getElementById("otpos");
+    elem.innerHTML = `<p>${player.alias} : ${player.position.x.toFixed(2)} , ${player.position.y.toFixed(2)}</p>`;
+    for (const peerConn in peerConnections)
+    {
+        elem.innerHTML += `<p>${peerConnections[peerConn].ship.alias} : ${peerConnections[peerConn].ship.position.x.toFixed(2)} , ${peerConnections[peerConn].ship.position.y.toFixed(2)}</p>`;
+    }
+
 }
 
 // better to move this to a seperate file called player controller for controllinjg current player
