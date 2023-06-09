@@ -42,12 +42,14 @@ async function api() {
     {
         console.log("Logging in with saved credentials");
         await login(localStorage.getItem("username"), localStorage.getItem("password"));
+        document.getElementsByTagName("canvas")[0].style.display = "block"
+        document.getElementById("login_page").style.display = "none"
     }
-    else
-    {
-        console.log("Creating new account");
-        await createAcc(makeid(15), makeid(15));
-    }
+    // else
+    // {
+    //     console.log("Creating new account");
+    //     await createAcc(makeid(15), makeid(15));
+    // }
     
     peer = new Peer(undefined, {
         host: "ice-server.karmakarmeghdip.repl.co",
