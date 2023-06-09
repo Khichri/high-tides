@@ -1,5 +1,5 @@
 class Ship {
-	constructor(x, y, isControllable=false) {
+	constructor(x, y, isControllable=false, renderData) {
         this.isControllable = isControllable;
 		this.r = 15;
 		this.position = createVector(x, y);
@@ -14,7 +14,21 @@ class Ship {
 		this.currentSailModeIndex = 1;
 		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 		this.cannonBallsFired = [];
+		this.alias = "Me";
         this.sprite = loadImage("media/images/ship_sprite.png");
+	}
+
+	updateShipState(data) {
+		this.position = createVector(data.position.x, data.position.y);
+		this.angle = data.angle;
+		this.targetAngle = data.targetAngle;
+		this.headingVector = p5.Vector.fromAngle(radians(this.angle));
+		this.velocity = createVector(data.velocity.x, data.velocity.y);
+		this.turnAngle = data.turnAngle;
+		this.currentSailModeIndex = data.currentSailModeIndex;
+		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
+		this.cannonBallsFired = [];
+		this.alias = data.alias;
 	}
 
 	fireCannonBall() {
@@ -36,7 +50,7 @@ class Ship {
 
 	render() 
     {
-        if(this.isControllable)
+		if(this.isControllable)
         {
 		    push();
 			noStroke();
@@ -48,7 +62,20 @@ class Ship {
         }
         else
         {
-             // TODO   
+			push();
+			noStroke();
+			translate(-player.position.x, -player.position.y);
+			translate(this.position.x, this.position.y);			
+            rotate(this.targetAngle - PI / 2);
+			texture(this.sprite);
+            rect(-25, -50, 50, 100);
+			
+    		textSize(16);
+    		fill(0, 0, 0);
+            // rotate(this.targetAngle - PI / 2);
+    		text(this.alias, 0, 50);
+
+    		pop();
         }
 
         push();
@@ -63,7 +90,7 @@ class Ship {
 			this.headingVector = p5.Vector.fromAngle(radians(this.angle));
 		}
 
-		if (!this.isControllable) this.handleShipTurning();
+		if (this.isControllable) this.handleShipTurning();
 
 		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 

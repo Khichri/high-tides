@@ -15,6 +15,10 @@ function setup() {
 
     world.setup();
     player.setup();
+
+    setInterval(() => {
+        propagateShipStateUpdate(player);
+    }, 50);
 }
 
 function draw() {
@@ -27,9 +31,13 @@ function draw() {
 
 
     player.update();
+    for (const peerConn in peerConnections)
+        peerConnections[peerConn].ship.update();
 
     world.render();
     player.render();
+    for (const peerConn in peerConnections)
+        peerConnections[peerConn].ship.render();
 
 
 

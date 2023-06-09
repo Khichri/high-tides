@@ -37,10 +37,10 @@ async function api() {
         game.get("global").set(user)
         // console.log("peerId node"+user.get("peerId")["#"])
 
-        game.get("global").map().on((user)=> {
-            if(!user) window.location.reload();
-            const alias = user.alias;
-            peerIds[alias] = user.peerId;
+        game.get("global").map().on((us)=> {
+            if(!us) return;
+            const alias = us.alias;
+            peerIds[alias] = us.peerId;
             updatePeers();
         }) 
     });
@@ -70,6 +70,27 @@ function propagateMessageToAllActivePeers(message) {
     }
 }
 
+function propagateShipStateUpdate(ship) {
+    propagateMessageToAllActivePeers({
+        type: "shipStateUpdate",
+        payload: {
+            alias: localStorage.getItem("username"),
+            position: {
+                x: ship.position.x,
+                y: ship.position.y
+            },
+            angle: ship.angle,
+            targetAngle: ship.targetAngle,
+            velocity: {
+                x: ship.velocity.x,
+                y: ship.velocity.y                
+            },
+            turnAngle: ship.turnAngle,
+            currentSailModeIndex: ship.currentSailModeIndex
+        }
+    });
+}
+
 function prepareConnection(conn, peerId)
 {
     conn.on('open', function() {
@@ -80,11 +101,15 @@ function prepareConnection(conn, peerId)
         
         console.log("Connection opened with : " + peerId);
         peerConnections[peerId] = {
-            connection : conn
+            connection : conn,
+            ship : new Ship(0, 0)
         };
         
         conn.on('data', function(data) {
-            console.log('Received', data);
+            // awconsole.log('Received', data);
+            if (data["type"] && data["type"] == "shipStateUpdate") {
+                peerConnections[peerId].ship.updateShipState(data["payload"]);
+            }
         });
         
         conn.on('close', function() {
