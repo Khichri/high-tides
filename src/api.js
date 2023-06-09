@@ -34,10 +34,19 @@ async function createAcc(username, password) {
 
 function shipStateUpdate(player) {
     if (user.is) {
-        user.get("position").get("x").put(Math.round(player.position.x));
-        user.get("position").get("y").put(Math.round(player.position.y));
-        user.get("currentSailModeIndex").put(player.currentSailModeIndex)
-        user.get("angle").put(player.angle);
+        // user.get("position").get("x").put(Math.round(player.position.x));
+        // user.get("position").get("y").put(Math.round(player.position.y));
+        // user.get("currentSailModeIndex").put(player.currentSailModeIndex)
+        // user.get("angle").put(player.angle);
+
+        user.get("state").put({
+            position: {
+                x: player.position.x,
+                y: player.position.y
+            },
+            currentSailModeIndex: player.currentSailModeIndex,
+            angle: player.angle
+        })
     }
 }
 
@@ -68,15 +77,27 @@ game.get("global").map().on((other, id) => {
 
 function playerInit(player) {
     if (user.is) {
-        user.get("position").get("x").put(Math.round(player.position.x));
-        user.get("position").get("y").put(Math.round(player.position.y));
-        game.get("global").set(user)
+        user.get("state").put({
+            position: {
+                x: player.position.x,
+                y: player.position.y
+            },
+            currentSailModeIndex: player.currentSailModeIndex,
+            angle: player.angle
+        })
+        game.get("global").set(gun.get("~@"+user.alias))
     } else {
         gun.on("auth", (ack) => {
             console.log("Welcome back", ack);
-            user.get("position").get("x").put(Math.round(player.position.x));
-            user.get("position").get("y").put(Math.round(player.position.y));
-            game.get("global").set(user)
+            user.get("state").put({
+            position: {
+                x: player.position.x,
+                y: player.position.y
+            },
+            currentSailModeIndex: player.currentSailModeIndex,
+            angle: player.angle
+        })
+            game.get("global").set(gun.get("~@"+user.alias))
         })
     }
 
