@@ -30,9 +30,9 @@
     </style>
   </head>
   <body>
-    <h1>High Tides</h1>
     <!-- <div id="sketch"></div> -->
     <div id="login_page">
+      <h1>High Tides</h1>
       <style>
         .modal {
           display: none; /* Hidden by default */
@@ -48,9 +48,7 @@
           background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
           border-radius: 0%;
         }
-         .sketch{
-          visibility: hidden;
-        }
+        
 
         /* Modal Content */
         .modal-content {
@@ -159,12 +157,12 @@
             <h2>Sign Up</h2>
             <div class="form-group">
               <label for="username">Username:</label>
-              <input type="text" id="username" name="username" required />
+              <input type="text" id="signup_username" name="username" required />
             </div>
             <br /><br />
             <div class="form-group">
               <label for="password">Password:</label>
-              <input type="password" id="password" name="password" required />
+              <input type="password" id="signup_password" name="password" required />
             </div>
             <br><br>
             <!-- <button type="submit">Sign Up</button> -->
@@ -183,12 +181,12 @@
             <h2>Log In</h2>
             <div class="form-group">
               <label for="username">Username:</label>
-              <input type="text" id="username" name="username" required />
+              <input type="text" id="login_username" name="username" required />
             </div>
             <br /><br />
             <div class="form-group">
               <label for="password">Password:</label>
-              <input type="password" id="password" name="password" required />
+              <input type="password" id="login_password" name="password" required />
             </div>
             <br><br>
             <input type="submit" value="Log In" />
