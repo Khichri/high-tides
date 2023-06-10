@@ -7,7 +7,7 @@ let peerIds = {}
 let peerConnections = {}
 let msgReceived = {}
 
-const game = gun.get("high-tides-test-7")
+const game = gun.get("high-tides-test-8")
 
 let peer;
 
