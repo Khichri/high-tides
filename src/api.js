@@ -10,40 +10,14 @@ const game = gun.get("high-tides-test-7")
 
 let peer;
 
-document.getElementsByClassName('signup-form')[0].addEventListener('submit', async (e)=>{
-    e.preventDefault()
-    const alias = document.getElementById("signup_username").value
-    const password = document.getElementById("signup_password").value
-    console.log("Logging in...", alias, password)
-    await createAcc(alias, password)
-    if(!user.is) login(alias, password)
-
-    console.log("Logged in...")
-
-    document.getElementsByTagName("canvas")[0].style.display = "block"
-    document.getElementById("login_page").style.display = "none"
-})
-
-document.getElementsByClassName('login-form')[0].addEventListener('submit', async (e)=>{
-    e.preventDefault()
-    const alias = document.getElementById("login_username").value
-    const password = document.getElementById("login_password").value
-    console.log("Logging in...", alias, password)
-    await login(alias, password)
-    console.log("Logged in...")
-
-    document.getElementsByTagName("canvas")[0].style.display = "block"
-    document.getElementById("login_page").style.display = "none"
-})
-
 async function api() {
     
     if (localStorage.getItem("username") && localStorage.getItem("password")) 
     {
         console.log("Logging in with saved credentials");
         await login(localStorage.getItem("username"), localStorage.getItem("password"));
-        document.getElementsByTagName("canvas")[0].style.display = "block"
-        document.getElementById("login_page").style.display = "none"
+        // document.getElementsByTagName("canvas")[0].style.display = "block"
+        // document.getElementById("login_page").style.display = "none"
     }
     // else
     // {
