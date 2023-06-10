@@ -14,7 +14,7 @@ class Ship {
 		this.currentSailModeIndex = 1;
 		this.currentSailMode = this.sailModes[this.currentSailModeIndex];
 		this.cannonBallsFired = [];
-		this.alias = "Me";
+		this.alias = "";
         this.sprite = loadImage("media/images/ship_sprite.png");
 	}
 
@@ -37,6 +37,8 @@ class Ship {
 
 	setup() {
 		this.position = createVector(0, 0);
+		// this.alias = user.is.alias;
+
 	}
 
 	nextSailMode() {
@@ -50,6 +52,7 @@ class Ship {
 
 	render() 
     {
+
 		if(this.isControllable)
         {
 		    push();
@@ -59,6 +62,12 @@ class Ship {
 			texture(this.sprite);
             rect(-25, -50, 50, 100);
     		pop();
+
+			push();
+			textSize(25);
+			fill(255, 255, 0);
+			text(this.alias, -30, -35);
+			pop();
         }
         else
         {
@@ -76,6 +85,12 @@ class Ship {
     		text(this.alias, 0, 50);
 
     		pop();
+
+			push();
+			textSize(25);
+			fill(255, 255, 0);
+			text(this.alias, -30, -35);
+			pop();
         }
 
         push();
@@ -85,6 +100,10 @@ class Ship {
 	}
 
 	update() {
+		if (user.is && !this.alias) {
+			this.alias = user.is.alias;
+		}
+
 		if (this.angle != this.targetAngle) {
 			this.angle = lerp(this.angle, this.targetAngle, 0.05);
 			this.headingVector = p5.Vector.fromAngle(radians(this.angle));
