@@ -66,7 +66,7 @@ class Ship {
 			push();
 			textSize(25);
 			fill(255, 255, 0);
-			text(this.alias, -30, -35);
+			text(this.alias, -30, -40);
 			pop();
         }
         else
@@ -78,19 +78,19 @@ class Ship {
             rotate(this.targetAngle - PI / 2);
 			texture(this.sprite);
             rect(-25, -50, 50, 100);
-			
-    		textSize(16);
-    		fill(0, 0, 0);
-            // rotate(this.targetAngle - PI / 2);
-    		text(this.alias, 0, 50);
 
+			textSize(25);
+			fill(0, 255, 0);
+			// translate(this.position.x, this.position.y);	
+			rotate(-(this.targetAngle - PI / 2));	
+    		text(this.alias, -45, -40);
     		pop();
 
 			push();
-			textSize(25);
-			fill(255, 255, 0);
-			text(this.alias, -30, -35);
+			
 			pop();
+			
+			
         }
 
         push();
