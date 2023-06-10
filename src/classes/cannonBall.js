@@ -24,6 +24,16 @@ class CannonBall
 		pop();
 	}
 
+    isColliding(otherShip)
+    {
+        var distance = dist(this.position.x, this.position.y, otherShip.position.x, otherShip.position.y);
+        if (distance < otherShip.r)
+        {
+            return true;
+        }
+        return false;
+    }
+
 	update() 
     {
         this.directionVector.setMag(this.ballSpeed * deltaTime);
