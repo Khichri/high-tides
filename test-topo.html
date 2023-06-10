@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topo Test</title>
+</head>
+<body>
+    <script src="./src/dependencies/gun.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gun/lib/unset.js"></script>
+    <script src="./src/dependencies/sea.js"></script>
+    <script src="https://unpkg.com/peerjs@latest/dist/peerjs.min.js"></script>
+    <script src="./src/utils.js"></script>
+    <!-- <script src="./src/api.js"></script> -->
+    <script src="./src/classes/peerHandler.js"></script>
+    
+    <form id="sender">
+        <input type="text" id="msg"/>         <input type="submit" id="send"/>
+    </form>
+    <br><br>
+    <div id="log"></div>
+    
+    <script>
+        const gun = Gun({
+            peers: ['https://HerokuCoordinator.karmakarmeghdip.repl.co/gun']
+        })
+        const user = gun.user();
+        const game = gun.get("high-tides-test-10")
+        window.peerIds = {}
+        let msgReceived = {};
+        
+        
+        let peerHandler;
+        
+        (async () => {if (localStorage.getItem("username") && localStorage.getItem("password")) {
+            console.log("Logging in with saved credentials");
+            await login(localStorage.getItem("username"), localStorage.getItem("password"))
+            peerHandler = new PeerHandler(4, user, game);
+            
+            game.get("accepting").map().on((us) => {
+                if (!us) return;
+                const alias = us.alias;
+                window.peerIds[alias] = us.peerId;
+                // updatePeers();
+                window.peerHandler.sendConnectionToPeers()
+            })
+            
+            game.get("not_accepting").map().on((us) => {
+                if (!us) return;
+                const alias = us.alias;
+                delete window.peerIds[alias];
+                // updatePeers();
+                // window.peerHandler.sendConnectionToPeers()
+            })
+            
+        }
+        else 
+        {
+            window.location.href = "index.html";
+        }})();
+        
+        const form = document.getElementById("sender").addEventListener("submit", (e) => {
+            e.preventDefault()
+            const msg = document.getElementById("msg").value
+            document.getElementById("msg").value = "";
+            console.log("Broadcasting ", msg)
+            peerHandler.onPeerMessage("", `${ user.is.alias }: ${ msg }`)
+        })
+
+        window.addToLog = (data) => {
+            document.getElementById("log").innerHTML += `<br>${ JSON.stringify(data) }`
+        }
+        
+    </script>
+    
+</body>
+</html>

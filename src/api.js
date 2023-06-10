@@ -5,7 +5,7 @@ const user = gun.user();
 
 let peerIds = {}
 let peerConnections = {}
-let msgReceived = {}
+// let msgReceived = {}
 
 const game = gun.get("high-tides-test-8")
 
@@ -156,32 +156,5 @@ function updatePeers() {
     }
 }
 
-async function login(username, password) {
-    localStorage.setItem("username", username);
-    localStorage.setItem("password", password);
-    return new Promise((resolve, reject) => {
-        if (!username) reject("Username can't be empty")
-        if (!password) reject("Password can't be empty")
-        user.auth(username, password, (ack) => {
-            if (ack.err) reject(ack.err)
-            // console.log(ack)
-            resolve(ack)
-        })
-    })
-}
-
-async function createAcc(username, password) {
-    localStorage.setItem("username", username);
-    localStorage.setItem("password", password);
-    return new Promise((resolve, reject) => {
-        if (!username) reject("Username can't be empty")
-        if (!password) reject("Password can't be empty")
-        user.create(username, password, (ack) => {
-            if (ack.err) reject(ack.err)
-            // console.log(ack)
-            resolve(ack)
-        })
-    })
-}
 
 api();
