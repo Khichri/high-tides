@@ -75,7 +75,7 @@ class PeerHandler
             window.peerHandler.sendConnectionToPeers();
         }
 
-        this.onPeerMessage(`${getByValue(window.peerIds, conn.peer)} disconnected from ${getByValue(window.peerIds, this.peerId)}`)
+        this.onPeerMessage(undefined, `${getByValue(window.peerIds, conn.peer)} disconnected from ${getByValue(window.peerIds, this.peerId)}`)
     }
 
     onPeerMessage(source, data)
@@ -110,7 +110,7 @@ class PeerHandler
             conn.on('close', () => {window.peerHandler.onPeerConnectionClose(conn, true)});
             conn.on('data', (data) => {window.peerHandler.onPeerMessage(conn.peer, data)});
             
-            this.onPeerConnection(`${getByValue(window.peerIds, conn.peer)} connected to ${getByValue(window.peerIds, this.peerId)}`);
+            this.onPeerMessage(undefined, `${getByValue(window.peerIds, conn.peer)} connected to ${getByValue(window.peerIds, this.peerId)} !`);
             
             if (this.acceptedConnections.length >= this.maxConnections) 
             {
@@ -126,7 +126,7 @@ class PeerHandler
             console.log("connection established to : " + conn.peer);
             this.sendConnections.push(conn);
             
-            this.onPeerConnection(`${getByValue(window.peerIds, this.peerId)} connected to ${getByValue(window.peerIds, conn.peer)}`);
+            this.onPeerMessage(undefined, `${getByValue(window.peerIds, this.peerId)} connected to ${getByValue(window.peerIds, conn.peer)} !`);
             
             conn.on('close', () => {window.peerHandler.onPeerConnectionClose(conn, false)});
             conn.on('data', (data) => {window.peerHandler.onPeerMessage(conn.peer, data)});
@@ -135,6 +135,8 @@ class PeerHandler
     
     onWindowUnload(e)
     {
+        window.peerHandler.game.get("accepting").unset(window.peerHandler.user);
+        window.peerHandler.game.get("not_accepting").set(window.peerHandler.user)
         window.peerHandler.peer.destroy();
         (e || window.event).returnValue = null;
         return null;
