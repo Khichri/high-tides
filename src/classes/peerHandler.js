@@ -75,7 +75,7 @@ class PeerHandler
             window.peerHandler.sendConnectionToPeers();
         }
 
-        this.onPeerMessage(`${getByValue(window.peerIds, conn.peer)} disconnected from ${getByValue(window.peerIds, this.peerId)}``)
+        this.onPeerMessage(`${getByValue(window.peerIds, conn.peer)} disconnected from ${getByValue(window.peerIds, this.peerId)}`)
     }
 
     onPeerMessage(source, data)
