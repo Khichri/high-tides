@@ -74,6 +74,8 @@ class PeerHandler
             console.log("reattempting conenctions again");
             window.peerHandler.sendConnectionToPeers();
         }
+
+        this.onPeerMessage(`${getByValue(window.peerIds, conn.peer)} disconnected from ${getByValue(window.peerIds, this.peerId)}``)
     }
 
     onPeerMessage(source, data)
