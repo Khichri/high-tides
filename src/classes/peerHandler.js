@@ -23,6 +23,7 @@ class PeerHandler
         this.isAcceptingConnections = true;
         this.maxConnections = maxConnections;
         this.peerId = undefined;
+        this.messageHashReceived = {};
         window.peerHandler = this;
     }
     
@@ -38,7 +39,8 @@ class PeerHandler
     onPeerClose()
     {
         console.log("peerjs connection closed");
-        window.peerHandler.game.get("global").unset(window.peerHandler.user);
+        window.peerHandler.game.get("accepting").unset(window.peerHandler.user);
+        window.peerHandler.game.get("not_accepting").set(window.peerHandler.user)
     }
     
     onPeerConnection(conn)
@@ -76,7 +78,9 @@ class PeerHandler
 
     onPeerMessage(source, data)
     {
-        if (msgReceived[data]) return;
+        const msgHash = cyrb53(JSON.stringify(data));
+        if (this.messageHashReceived[msgHash]) return;
+        this.messageHashReceived[msgHash] = true;
         
         msgGossipped(data);
         window.addToLog(data);
@@ -103,6 +107,9 @@ class PeerHandler
             console.log("connection accepted & established from : " + conn.peer);
             conn.on('close', () => {window.peerHandler.onPeerConnectionClose(conn, true)});
             conn.on('data', (data) => {window.peerHandler.onPeerMessage(conn.peer, data)});
+            
+            this.onPeerConnection(`${getByValue(window.peerIds, conn.peer)} connected to ${getByValue(window.peerIds, this.peerId)}`);
+            
             if (this.acceptedConnections.length >= this.maxConnections) 
             {
                 window.peerHandler.game.get("accepting").unset(window.peerHandler.user);
@@ -116,6 +123,9 @@ class PeerHandler
             if (this.sendConnections.length >= this.maxConnections  || this.isConnectedToPeer(conn.peer)) return;
             console.log("connection established to : " + conn.peer);
             this.sendConnections.push(conn);
+            
+            this.onPeerConnection(`${getByValue(window.peerIds, this.peerId)} connected to ${getByValue(window.peerIds, conn.peer)}`);
+            
             conn.on('close', () => {window.peerHandler.onPeerConnectionClose(conn, false)});
             conn.on('data', (data) => {window.peerHandler.onPeerMessage(conn.peer, data)});
         }
